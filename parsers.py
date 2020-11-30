@@ -69,6 +69,8 @@ class DataExtractor:
 
         product["rating"] = self.get_rating()
 
+        product["img"] = self.get_img()
+
         rawtable = self.parsed_url.find("table", class_="table table-striped")
         product.update(self.cleanrawtable(rawtable))
 
@@ -131,6 +133,13 @@ class DataExtractor:
             rating = 5
 
         return rating
+
+    def get_img(self):
+        parsed_img = self.parsed_url.find("div", class_="item active").find("img")[
+            "src"
+        ]
+
+        return parsed_img.replace("../..", "http://books.toscrape.com/catalogue")
 
 
 class WebHandler:
