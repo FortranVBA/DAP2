@@ -65,6 +65,10 @@ class DataExtractor:
 
         product["description"] = self.get_description()
 
+        product["category"] = self.get_category()
+
+        product["rating"] = self.get_rating()
+
         rawtable = self.parsed_url.find("table", class_="table table-striped")
         product.update(self.cleanrawtable(rawtable))
 
@@ -101,6 +105,33 @@ class DataExtractor:
 
         return description
 
+    def get_category(self):
+        category = ""
+
+        parse_tags_li = self.parsed_url.find("ul", class_="breadcrumb").find_all("li")
+
+        if parse_tags_li is not None:
+            category = parse_tags_li[2].text.strip("\r\n")
+
+        return category
+
+    def get_rating(self):
+        rating = -1
+
+        parsed_rating = self.parsed_url.find("div", class_="col-sm-6 product_main")
+        if parsed_rating.find("p", class_="star-rating One") is not None:
+            rating = 1
+        elif parsed_rating.find("p", class_="star-rating Two") is not None:
+            rating = 2
+        elif parsed_rating.find("p", class_="star-rating Three") is not None:
+            rating = 3
+        elif parsed_rating.find("p", class_="star-rating Four") is not None:
+            rating = 4
+        elif parsed_rating.find("p", class_="star-rating Five") is not None:
+            rating = 5
+
+        return rating
+
 
 class WebHandler:
     """Handle data conversion and extraction from an url string."""
@@ -117,7 +148,7 @@ class WebHandler:
         self.books_links = self.data_extractor.getbooklinks()
         # For loop
         self.load(
-            "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+            "https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html"
         )
         self.data_extractor.getproductdata()
         # sleep(randint(2, 7))
