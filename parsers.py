@@ -2,6 +2,8 @@
 
 from requests import get
 from bs4 import BeautifulSoup
+from time import sleep
+from random import randint
 
 
 class WebGetter:
@@ -61,8 +63,11 @@ class DataExtractor:
 
         product["url"] = self.url
 
+        product["description"] = self.get_description()
+
         rawtable = self.parsed_url.find("table", class_="table table-striped")
         product.update(self.cleanrawtable(rawtable))
+
         print(product)
 
     def cleanrawtable(self, rawtable):
@@ -75,6 +80,26 @@ class DataExtractor:
             cleantable[propertyname] = propertyvalue
 
         return cleantable
+
+    def get_description(self):
+        match_count = 0
+        description = ""
+
+        parse_tags_p = self.parsed_url.find("article", class_="product_page").find_all(
+            "p"
+        )
+
+        for tag in parse_tags_p:
+            if "<p>" in str(tag):
+                description = tag.text
+                match_count += 1
+
+        if match_count == 0:
+            description = "No description found."
+        elif match_count > 1:
+            description = "Error : several tags p found for product description."
+
+        return description
 
 
 class WebHandler:
@@ -95,6 +120,7 @@ class WebHandler:
             "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
         )
         self.data_extractor.getproductdata()
+        # sleep(randint(2, 7))
 
     def extract_categories(self):
         pass
