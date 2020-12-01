@@ -63,6 +63,8 @@ class DataExtractor:
 
         product["url"] = self.url
 
+        product["title"] = self.get_title()
+
         product["description"] = self.get_description()
 
         product["category"] = self.get_category()
@@ -74,7 +76,7 @@ class DataExtractor:
         rawtable = self.parsed_url.find("table", class_="table table-striped")
         product.update(self.cleanrawtable(rawtable))
 
-        print(product)
+        return product
 
     def cleanrawtable(self, rawtable):
         cleantable = {}
@@ -135,11 +137,24 @@ class DataExtractor:
         return rating
 
     def get_img(self):
+        img_src = ""
+
         parsed_img = self.parsed_url.find("div", class_="item active").find("img")[
             "src"
         ]
+        img_src = parsed_img.replace("../..", "http://books.toscrape.com/catalogue")
 
-        return parsed_img.replace("../..", "http://books.toscrape.com/catalogue")
+        return img_src
+
+    def get_title(self):
+        title = ""
+
+        parsed_title = self.parsed_url.find("div", class_="col-sm-6 product_main").find(
+            "h1"
+        )
+        title = parsed_title.text
+
+        return title
 
 
 class WebHandler:
@@ -148,6 +163,7 @@ class WebHandler:
     def __init__(self):
         self.data_extractor = DataExtractor()
         self.books_links = []
+        self.books_data = []
 
     def load(self, url):
         self.data_extractor.load_data(url)
@@ -155,12 +171,17 @@ class WebHandler:
     def extract_products(self):
         """Get all product properties inside parsed url with several product links."""
         self.books_links = self.data_extractor.getbooklinks()
+
+        self.books_data = []
+
         # For loop
         self.load(
             "https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html"
         )
-        self.data_extractor.getproductdata()
+        self.books_data.append(self.data_extractor.getproductdata())
         # sleep(randint(2, 7))
+
+        return self.books_data
 
     def extract_categories(self):
         pass

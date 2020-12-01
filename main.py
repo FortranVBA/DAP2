@@ -1,6 +1,7 @@
 """Project OC DAP 2 main file."""
 
 from parsers import WebHandler
+from book import BookData
 
 
 class Application:
@@ -8,10 +9,14 @@ class Application:
 
     def __init__(self):
         self.web_handler = WebHandler()
+        self.book_data = BookData()
 
     def run(self):
         self.web_handler.load("http://books.toscrape.com")
-        self.web_handler.extract_products()
+
+        raw_extract_books = self.web_handler.extract_products()
+        print(raw_extract_books[0])
+        self.book_data.import_dict(raw_extract_books)
 
 
 def main():
