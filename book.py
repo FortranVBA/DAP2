@@ -1,5 +1,7 @@
 """Project OC DAP 2 main file."""
 
+import csv
+
 
 class Book:
     """Book characteristics extracted from booktoscrape.com."""
@@ -53,4 +55,37 @@ class BookData:
         for book in book_raw_data:
             self.books.append(Book(book))
 
-        print(self.books[0].upc)
+    def print_csv(self, filename):
+
+        with open(filename, "w", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(
+                [
+                    "product_page_url",
+                    "universal_ product_code (upc)",
+                    "title",
+                    "price_including_tax",
+                    "price_excluding_tax",
+                    "number_available",
+                    "product_description",
+                    "category",
+                    "review_rating",
+                    "image_url",
+                ]
+            )
+
+            for book in self.books:
+                writer.writerow(
+                    [
+                        book.url,
+                        book.upc,
+                        book.title,
+                        str(book.price_with_tax),
+                        str(book.price_without_tax),
+                        str(book.nb_available),
+                        book.description,
+                        book.category,
+                        str(book.rating),
+                        book.img,
+                    ]
+                )

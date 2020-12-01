@@ -99,7 +99,7 @@ class DataExtractor:
 
         for tag in parse_tags_p:
             if "<p>" in str(tag):
-                description = tag.text
+                description = tag.prettify("latin-1")
                 match_count += 1
 
         if match_count == 0:
