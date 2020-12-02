@@ -4,7 +4,7 @@ import time
 from time import sleep
 from requests import get
 from bs4 import BeautifulSoup
-from random import randint
+from random import uniform
 
 
 class WebGetter:
@@ -16,7 +16,15 @@ class WebGetter:
 
     def get(self, url):
         """Get server response from url string."""
-        self.response = get(url)
+        response = get(url)
+
+        # Throw a warning for non-200 status codes
+        if response.status_code != 200:
+            print(
+                "Warning for url: {}; Status code: {}".format(url, response.status_code)
+            )
+
+        self.response = response
 
 
 class Parser:
@@ -182,6 +190,8 @@ class WebHandler:
         self.data_extractor = DataExtractor()
         self.books_links = []
         self.books_data = []
+        self.PRINT_MODULO_FREQ = 5
+        self.REQUEST_WAIT_RANGE = [1, 3]
 
     def load(self, url):
         """Load url for future parsing and data extraction."""
@@ -199,14 +209,10 @@ class WebHandler:
 
         for link_book in self.books_links:
             # Monitor the requests
-            sleep(randint(2, 5))
+            sleep(uniform(self.REQUEST_WAIT_RANGE[0], self.REQUEST_WAIT_RANGE[1]))
             requests += 1
             elapsed_time = time.time() - start_time
-            print(
-                "Request:{}; Frequency: {} requests/s".format(
-                    requests, requests / elapsed_time
-                )
-            )
+            self.print_request_status(requests, elapsed_time, self.PRINT_MODULO_FREQ)
 
             self.load(link_book)
             self.books_data.append(self.data_extractor.get_product_data())
@@ -216,3 +222,12 @@ class WebHandler:
     def extract_categories(self):
         """Get all category urls from loaded parsed url."""
         pass
+
+    def print_request_status(self, requests, elapsed_time, print_modulo):
+        """Print the request status progression every print_modulo requests."""
+        if requests % print_modulo == 0 or requests == 1:
+            print(
+                "Request:{}; Frequency: {} requests/s".format(
+                    requests, requests / elapsed_time
+                )
+            )
