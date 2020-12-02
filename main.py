@@ -20,6 +20,7 @@ class Application:
         self.book_data.import_dict(raw_extract_books)
 
         self.book_data.print_csv("books.csv")
+        self.book_data.download_all_img()
 
 
 def main():

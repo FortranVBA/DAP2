@@ -166,7 +166,7 @@ class DataExtractor:
         parsed_img = self.parsed_url.find("div", class_="item active").find("img")[
             "src"
         ]
-        img_src = parsed_img.replace("../..", "http://books.toscrape.com/catalogue")
+        img_src = parsed_img.replace("../../", "http://books.toscrape.com/")
 
         return img_src
 

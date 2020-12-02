@@ -1,6 +1,11 @@
 """Project OC DAP 2 file with book related class."""
 
 import csv
+import os
+import time
+from time import sleep
+from parsers import WebGetter
+from random import uniform
 
 
 class Book:
@@ -121,6 +126,8 @@ class BookData:
     def __init__(self):
         """Init BookData class."""
         self.books = []
+        self.PRINT_MODULO_FREQ = 5
+        self.REQUEST_WAIT_RANGE = [1, 2]
 
     def import_dict(self, book_raw_data):
         """Create list of Book objects from list of dictionnaries."""
@@ -161,3 +168,54 @@ class BookData:
                         book.img,
                     ]
                 )
+
+    def download_all_img(self):
+        """Download all img files from BookData."""
+        if not os.path.exists("images"):
+            os.makedirs("images")
+
+        # Preparing the monitoring of the loop
+        start_time = time.time()
+        requests = 0
+
+        for book in self.books:
+
+            # Monitor the requests
+            sleep(uniform(self.REQUEST_WAIT_RANGE[0], self.REQUEST_WAIT_RANGE[1]))
+            requests += 1
+            elapsed_time = time.time() - start_time
+            self.print_request_status(requests, elapsed_time, self.PRINT_MODULO_FREQ)
+
+            self.download_img(book.category, book.title, book.img)
+
+    def download_img(self, category, title, img):
+        """Download img file from one book data."""
+        web_getter = WebGetter()
+
+        if not os.path.exists("images/" + category):
+            os.makedirs("images/" + category)
+
+        web_getter.get(img)
+        file_name = self.get_valid_file_name(title) + ".jpg"
+        with open("images/" + category + "/" + file_name, "wb") as f:
+            f.write(web_getter.response.content)
+
+    def get_valid_file_name(self, title):
+        """Truncate file name if too big and remove forbidden characters."""
+        valid_name = title[:20]
+
+        forbidden_char = ["/", '""', ":", "*", "?", '"', ">", "<"]
+
+        for char in forbidden_char:
+            valid_name = valid_name.replace(char, "-")
+
+        return valid_name
+
+    def print_request_status(self, requests, elapsed_time, print_modulo):
+        """Print the request status progression every print_modulo requests."""
+        if requests % print_modulo == 0 or requests == 1:
+            print(
+                "Download request:{}; Frequency: {} requests/s".format(
+                    requests, requests / elapsed_time
+                )
+            )
