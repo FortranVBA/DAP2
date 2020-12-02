@@ -66,8 +66,6 @@ class DataExtractor:
 
             self.books_links.append(link_parsed)
 
-        print(self.books_links)
-
         return self.books_links
 
     def get_product_data(self):
@@ -195,15 +193,13 @@ class WebHandler:
 
         self.books_data = []
 
-        return self.books_data
-
         # Preparing the monitoring of the loop
         start_time = time.time()
         requests = 0
 
         for link_book in self.books_links:
             # Monitor the requests
-            sleep(randint(2, 7))
+            sleep(randint(2, 5))
             requests += 1
             elapsed_time = time.time() - start_time
             print(
