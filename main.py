@@ -8,10 +8,12 @@ class Application:
     """Project application class."""
 
     def __init__(self):
+        """Init Application class."""
         self.web_handler = WebHandler()
         self.book_data = BookData()
 
     def run(self):
+        """Run  Application class."""
         self.web_handler.load("http://books.toscrape.com")
 
         raw_extract_books = self.web_handler.extract_products()

@@ -1,4 +1,4 @@
-"""Project OC DAP 2 main file."""
+"""Project OC DAP 2 file with book related class."""
 
 import csv
 
@@ -7,6 +7,7 @@ class Book:
     """Book characteristics extracted from booktoscrape.com."""
 
     def __init__(self, dict_book):
+        """Init Book class."""
         self.url = "Unknown"
         self.upc = "Unknown"
         self.title = "Unknown"
@@ -21,6 +22,7 @@ class Book:
         self.set_from_dict(dict_book)
 
     def set_from_dict(self, dict_book):
+        """Set book class from a dictionnary."""
         self.url = dict_book["url"]
         self.upc = dict_book["UPC"]
         self.title = dict_book["title"]
@@ -33,6 +35,7 @@ class Book:
         self.img = dict_book["img"]
 
     def get_number(self, str_number):
+        """Extract numbers (including '.' character) from a string."""
         number = -1
 
         number_str = "".join(
@@ -48,15 +51,16 @@ class BookData:
     """Data storage of all scraped books."""
 
     def __init__(self):
+        """Init BookData class."""
         self.books = []
 
     def import_dict(self, book_raw_data):
-
+        """Create list of Book objects from list of dictionnaries."""
         for book in book_raw_data:
             self.books.append(Book(book))
 
     def print_csv(self, filename):
-
+        """Create csv file from BookData."""
         with open(filename, "w", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(
