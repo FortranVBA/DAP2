@@ -1,8 +1,9 @@
 """Project OC DAP 2 file with web handler, parsing and data extraction related class."""
 
+import time
+from time import sleep
 from requests import get
 from bs4 import BeautifulSoup
-from time import sleep
 from random import randint
 
 
@@ -56,11 +57,16 @@ class DataExtractor:
         self.books_links = []
 
         for tag in parsed_books_data:
-            self.books_links.append(
-                tag.find("a")["href"].replace(
-                    "../..", "http://books.toscrape.com/catalogue"
-                )
-            )
+            link_parsed = tag.find("a")["href"]
+            if "catalogue" in link_parsed:
+                link_parsed = "http://books.toscrape.com/" + link_parsed
+            elif "../" in link_parsed:
+                link_parsed = link_parsed.replace("../", "")
+                link_parsed = "http://books.toscrape.com/catalogue/" + link_parsed
+
+            self.books_links.append(link_parsed)
+
+        print(self.books_links)
 
         return self.books_links
 
@@ -189,12 +195,25 @@ class WebHandler:
 
         self.books_data = []
 
-        # For loop
-        self.load(
-            "https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html"
-        )
-        self.books_data.append(self.data_extractor.get_product_data())
-        # sleep(randint(2, 7))
+        return self.books_data
+
+        # Preparing the monitoring of the loop
+        start_time = time.time()
+        requests = 0
+
+        for link_book in self.books_links:
+            # Monitor the requests
+            sleep(randint(2, 7))
+            requests += 1
+            elapsed_time = time.time() - start_time
+            print(
+                "Request:{}; Frequency: {} requests/s".format(
+                    requests, requests / elapsed_time
+                )
+            )
+
+            self.load(link_book)
+            self.books_data.append(self.data_extractor.get_product_data())
 
         return self.books_data
 
