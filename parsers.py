@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from random import uniform
 from config import PRINT_MODULO_FREQ
 from config import REQUEST_WAIT_RANGE
+from config import Field
 
 
 class WebGetter:
@@ -84,17 +85,17 @@ class DataExtractor:
         """Return product properties from loaded parsed web page."""
         product = {}
 
-        product["url"] = self.url
+        product[Field.url] = self.url
 
-        product["title"] = self.get_title()
+        product[Field.title] = self.get_title()
 
-        product["description"] = self.get_description()
+        product[Field.description] = self.get_description()
 
-        product["category"] = self.get_category()
+        product[Field.category] = self.get_category()
 
-        product["rating"] = self.get_rating()
+        product[Field.rating] = self.get_rating()
 
-        product["img"] = self.get_img()
+        product[Field.img] = self.get_img()
 
         rawtable = self.parsed_url.find("table", class_="table table-striped")
         product.update(self.table_to_dict(rawtable))
