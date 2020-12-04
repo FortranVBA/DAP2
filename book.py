@@ -6,6 +6,8 @@ import time
 from time import sleep
 from parsers import WebGetter
 from random import uniform
+from config import PRINT_MODULO_FREQ
+from config import REQUEST_WAIT_RANGE
 
 
 class Book:
@@ -126,8 +128,6 @@ class BookData:
     def __init__(self):
         """Init BookData class."""
         self.books = []
-        self.PRINT_MODULO_FREQ = 5
-        self.REQUEST_WAIT_RANGE = [1, 2]
 
     def import_dict(self, book_raw_data):
         """Create list of Book objects from list of dictionnaries."""
@@ -181,10 +181,10 @@ class BookData:
         for book in self.books:
 
             # Monitor the requests
-            sleep(uniform(self.REQUEST_WAIT_RANGE[0], self.REQUEST_WAIT_RANGE[1]))
+            sleep(uniform(REQUEST_WAIT_RANGE[0], REQUEST_WAIT_RANGE[1]))
             requests += 1
             elapsed_time = time.time() - start_time
-            self.print_request_status(requests, elapsed_time, self.PRINT_MODULO_FREQ)
+            self.print_request_status(requests, elapsed_time, PRINT_MODULO_FREQ)
 
             self.download_img(book.category, book.title, book.img)
 
