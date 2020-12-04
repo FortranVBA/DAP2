@@ -24,6 +24,8 @@ class WebGetter:
                 "Warning for url: {}; Status code: {}".format(url, response.status_code)
             )
 
+        response.encoding = "utf-8"
+
         self.response = response
 
 
@@ -76,7 +78,7 @@ class DataExtractor:
 
         return self.books_links
 
-    def get_product_data(self):
+    def get_product_fields(self):
         """Return product properties from loaded parsed web page."""
         product = {}
 
@@ -103,9 +105,9 @@ class DataExtractor:
 
         tablerow = rawtable.find_all("tr")
         for row in tablerow:
-            propertyname = row.th.text.replace("</th>", "").replace("<th>", "")
-            propertyvalue = row.td.text.replace("</td>", "").replace("<td>", "")
-            cleantable[propertyname] = propertyvalue
+            key = row.th.text.replace("</th>", "").replace("<th>", "")
+            value = row.td.text.replace("</td>", "").replace("<td>", "")
+            cleantable[key] = value
 
         return cleantable
 
@@ -120,7 +122,7 @@ class DataExtractor:
 
         for tag in parse_tags_p:
             if "<p>" in str(tag):
-                description = tag.prettify("latin-1")
+                description = tag.text
                 match_count += 1
 
         if match_count == 0:
@@ -145,17 +147,12 @@ class DataExtractor:
         """Get book rating from loaded parsed page."""
         rating = -1
 
+        rating_converter = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
+
         parsed_rating = self.parsed_url.find("div", class_="col-sm-6 product_main")
-        if parsed_rating.find("p", class_="star-rating One") is not None:
-            rating = 1
-        elif parsed_rating.find("p", class_="star-rating Two") is not None:
-            rating = 2
-        elif parsed_rating.find("p", class_="star-rating Three") is not None:
-            rating = 3
-        elif parsed_rating.find("p", class_="star-rating Four") is not None:
-            rating = 4
-        elif parsed_rating.find("p", class_="star-rating Five") is not None:
-            rating = 5
+        string_rating = parsed_rating.find("p", class_="star-rating")["class"][-1]
+        if string_rating in rating_converter:
+            rating = rating_converter[string_rating]
 
         return rating
 
@@ -215,7 +212,7 @@ class WebHandler:
             self.print_request_status(requests, elapsed_time, self.PRINT_MODULO_FREQ)
 
             self.load(link_book)
-            self.books_data.append(self.data_extractor.get_product_data())
+            self.books_data.append(self.data_extractor.get_product_fields())
 
         return self.books_data
 
