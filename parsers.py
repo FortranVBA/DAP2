@@ -5,6 +5,8 @@ from time import sleep
 from requests import get
 from bs4 import BeautifulSoup
 from random import uniform
+from config import PRINT_MODULO_FREQ
+from config import REQUEST_WAIT_RANGE
 
 
 class WebGetter:
@@ -187,8 +189,6 @@ class WebHandler:
         self.data_extractor = DataExtractor()
         self.books_links = []
         self.books_data = []
-        self.PRINT_MODULO_FREQ = 5
-        self.REQUEST_WAIT_RANGE = [1, 3]
 
     def load(self, url):
         """Load url for future parsing and data extraction."""
@@ -206,10 +206,10 @@ class WebHandler:
 
         for link_book in self.books_links:
             # Monitor the requests
-            sleep(uniform(self.REQUEST_WAIT_RANGE[0], self.REQUEST_WAIT_RANGE[1]))
+            sleep(uniform(REQUEST_WAIT_RANGE[0], REQUEST_WAIT_RANGE[1]))
             requests += 1
             elapsed_time = time.time() - start_time
-            self.print_request_status(requests, elapsed_time, self.PRINT_MODULO_FREQ)
+            self.print_request_status(requests, elapsed_time, PRINT_MODULO_FREQ)
 
             self.load(link_book)
             self.books_data.append(self.data_extractor.get_product_fields())
