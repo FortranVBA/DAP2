@@ -181,6 +181,24 @@ class DataExtractor:
 
         return title
 
+    def get_next_page(self):
+        """Return the next page of catalogue page if any or return "None" otherwise."""
+        parsed_next_page = self.parsed_url.find("li", class_="next")
+        if parsed_next_page is None:
+            parsed_next_page = "None"
+        else:
+            parsed_next_page = parsed_next_page.find("a")["href"]
+
+            if "catalogue" in parsed_next_page:
+                parsed_next_page = "http://books.toscrape.com/" + parsed_next_page
+            elif "../" in parsed_next_page:
+                parsed_next_page = parsed_next_page.replace("../", "")
+                parsed_next_page = (
+                    "http://books.toscrape.com/catalogue/" + parsed_next_page
+                )
+
+        print(parsed_next_page)
+
 
 class WebHandler:
     """Handle data conversion and extraction from an url string."""
@@ -229,3 +247,7 @@ class WebHandler:
                     requests, requests / elapsed_time
                 )
             )
+
+    def get_next_page(self):
+        """Return the next page of catalogue page if any or return "None" otherwise."""
+        self.data_extractor.get_next_page()

@@ -1,14 +1,15 @@
 """Project OC DAP 2 file with book related class."""
 
 import csv
-import os
 import time
 from time import sleep
 from parsers import WebGetter
 from random import uniform
+from pathlib import Path
 from config import PRINT_MODULO_FREQ
 from config import REQUEST_WAIT_RANGE
 from config import Field
+from config import path
 
 
 class Book:
@@ -137,8 +138,11 @@ class BookData:
 
     def print_csv(self, filename):
         """Create csv file from BookData."""
-        with open(filename, "w", encoding="utf-8") as f:
-            writer = csv.writer(f)
+        path_csv = Path()
+
+        path_csv = path.absolute() / filename
+        with path_csv.open(mode="w", encoding="utf-8") as file:
+            writer = csv.writer(file)
             writer.writerow(
                 [
                     "product_page_url",
@@ -172,9 +176,6 @@ class BookData:
 
     def download_all_img(self):
         """Download all img files from BookData."""
-        if not os.path.exists("images"):
-            os.makedirs("images")
-
         # Preparing the monitoring of the loop
         start_time = time.time()
         requests = 0
@@ -193,13 +194,22 @@ class BookData:
         """Download img file from one book data."""
         web_getter = WebGetter()
 
-        if not os.path.exists("images/" + category):
-            os.makedirs("images/" + category)
+        #        if not os.path.exists("images/" + category):
+        #            os.makedirs("images/" + category)
 
         web_getter.get(img)
         file_name = self.get_valid_file_name(title) + ".jpg"
-        with open("images/" + category + "/" + file_name, "wb") as f:
-            f.write(web_getter.response.content)
+
+        path_file = Path()
+        path_download = Path()
+
+        path_file = path.absolute() / "images" / category
+        path_file.mkdir(parents=True, exist_ok=True)
+
+        path_download = path.absolute() / "images" / category / file_name
+
+        with path_download.open(mode="wb") as file:
+            file.write(web_getter.response.content)
 
     def get_valid_file_name(self, title):
         """Truncate file name if too big and remove forbidden characters."""
