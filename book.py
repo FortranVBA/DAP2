@@ -130,13 +130,20 @@ class BookData:
     def __init__(self):
         """Init BookData class."""
         self.books = []
+        self.categories = []
 
     def import_dict(self, book_raw_data):
         """Create list of Book objects from list of dictionnaries."""
         for book in book_raw_data:
             self.books.append(Book(book))
+            self.update_categories(self.books[-1].category)
 
-    def print_csv(self, filename):
+    def update_categories(self, category):
+        """Update the list of book categories included in BookData."""
+        if category not in self.categories:
+            self.categories.append(category)
+
+    def print_global_csv(self, filename):
         """Create csv file from BookData."""
         path_csv = Path()
 
@@ -174,6 +181,51 @@ class BookData:
                     ]
                 )
 
+    def print_category_csv(self):
+        """Create one csv files per category from BookData."""
+        path_csv = Path()
+        for category in self.categories:
+            path_csv = path.absolute() / "csv"
+            path_csv.mkdir(parents=True, exist_ok=True)
+
+            file_name = self.get_valid_file_name(category) + ".csv"
+
+            path_csv = path_csv / file_name
+
+            with path_csv.open(mode="w", encoding="utf-8") as file:
+                writer = csv.writer(file)
+                writer.writerow(
+                    [
+                        "product_page_url",
+                        "universal_ product_code (upc)",
+                        "title",
+                        "price_including_tax",
+                        "price_excluding_tax",
+                        "number_available",
+                        "product_description",
+                        "category",
+                        "review_rating",
+                        "image_url",
+                    ]
+                )
+
+                for book in self.books:
+                    if book.category == category:
+                        writer.writerow(
+                            [
+                                book.url,
+                                book.upc,
+                                book.title,
+                                str(book.price_with_tax),
+                                str(book.price_without_tax),
+                                str(book.nb_available),
+                                book.description,
+                                book.category,
+                                str(book.rating),
+                                book.img,
+                            ]
+                        )
+
     def download_all_img(self):
         """Download all img files from BookData."""
         # Preparing the monitoring of the loop
@@ -193,9 +245,6 @@ class BookData:
     def download_img(self, category, title, img):
         """Download img file from one book data."""
         web_getter = WebGetter()
-
-        #        if not os.path.exists("images/" + category):
-        #            os.makedirs("images/" + category)
 
         web_getter.get(img)
         file_name = self.get_valid_file_name(title) + ".jpg"

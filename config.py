@@ -3,7 +3,7 @@ from pathlib import Path
 
 path = Path()
 PRINT_MODULO_FREQ = 5
-REQUEST_WAIT_RANGE = [1, 3]
+REQUEST_WAIT_RANGE = [1, 2]
 
 
 class Field:

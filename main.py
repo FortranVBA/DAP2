@@ -15,13 +15,11 @@ class Application:
     def run(self):
         """Run  Application class."""
         self.web_handler.load("http://books.toscrape.com")
-        self.web_handler.get_next_page()
-        return
 
         raw_extract_books = self.web_handler.extract_products()
         self.book_data.import_dict(raw_extract_books)
 
-        self.book_data.print_csv("books.csv")
+        self.book_data.print_category_csv()
         self.book_data.download_all_img()
 
 
