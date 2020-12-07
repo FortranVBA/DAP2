@@ -188,14 +188,13 @@ class DataExtractor:
             parsed_next_page = "None"
         else:
             parsed_next_page = parsed_next_page.find("a")["href"]
+            modif_url = self.url
+            if "index.html" in modif_url:
+                modif_url = modif_url.replace("index.html", "")
+            elif "page-1.html" in modif_url:
+                modif_url = modif_url.replace("page-1.html", "")
 
-            if "catalogue" in parsed_next_page:
-                parsed_next_page = "http://books.toscrape.com/" + parsed_next_page
-            elif "../" in parsed_next_page:
-                parsed_next_page = parsed_next_page.replace("../", "")
-                parsed_next_page = (
-                    "http://books.toscrape.com/catalogue/" + parsed_next_page
-                )
+            parsed_next_page = modif_url + parsed_next_page
 
         return parsed_next_page
 
