@@ -197,7 +197,25 @@ class DataExtractor:
                     "http://books.toscrape.com/catalogue/" + parsed_next_page
                 )
 
-        print(parsed_next_page)
+        return parsed_next_page
+
+    def extract_categories(self):
+        """Get all category urls from loaded parsed url."""
+        parsed_category_pages = self.parsed_url.find("ul", class_="nav nav-list").li
+        parsed_category_pages = parsed_category_pages.find_all("li")
+
+        category_links = []
+        for tag in parsed_category_pages:
+            link_parsed = tag.find("a")["href"]
+            if "catalogue" in link_parsed:
+                link_parsed = "http://books.toscrape.com/" + link_parsed
+            elif "../" in link_parsed:
+                link_parsed = link_parsed.replace("../", "")
+                link_parsed = "http://books.toscrape.com/catalogue/" + link_parsed
+
+            category_links.append(link_parsed)
+
+        return category_links
 
 
 class WebHandler:
@@ -237,7 +255,7 @@ class WebHandler:
 
     def extract_categories(self):
         """Get all category urls from loaded parsed url."""
-        pass
+        return self.data_extractor.extract_categories()
 
     def print_request_status(self, requests, elapsed_time, print_modulo):
         """Print the request status progression every print_modulo requests."""
@@ -250,4 +268,4 @@ class WebHandler:
 
     def get_next_page(self):
         """Return the next page of catalogue page if any or return "None" otherwise."""
-        self.data_extractor.get_next_page()
+        return self.data_extractor.get_next_page()
