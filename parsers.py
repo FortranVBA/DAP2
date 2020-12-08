@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from random import uniform
 from config import PRINT_MODULO_FREQ
 from config import REQUEST_WAIT_RANGE
+from config import Field
 
 
 class WebGetter:
@@ -84,17 +85,17 @@ class DataExtractor:
         """Return product properties from loaded parsed web page."""
         product = {}
 
-        product["url"] = self.url
+        product[Field.url] = self.url
 
-        product["title"] = self.get_title()
+        product[Field.title] = self.get_title()
 
-        product["description"] = self.get_description()
+        product[Field.description] = self.get_description()
 
-        product["category"] = self.get_category()
+        product[Field.category] = self.get_category()
 
-        product["rating"] = self.get_rating()
+        product[Field.rating] = self.get_rating()
 
-        product["img"] = self.get_img()
+        product[Field.img] = self.get_img()
 
         rawtable = self.parsed_url.find("table", class_="table table-striped")
         product.update(self.table_to_dict(rawtable))
@@ -180,6 +181,41 @@ class DataExtractor:
 
         return title
 
+    def get_next_page(self):
+        """Return the next page of catalogue page if any or return "None" otherwise."""
+        parsed_next_page = self.parsed_url.find("li", class_="next")
+        if parsed_next_page is None:
+            parsed_next_page = "None"
+        else:
+            parsed_next_page = parsed_next_page.find("a")["href"]
+            modif_url = self.url
+            if "index.html" in modif_url:
+                modif_url = modif_url.replace("index.html", "")
+            elif "page-1.html" in modif_url:
+                modif_url = modif_url.replace("page-1.html", "")
+
+            parsed_next_page = modif_url + parsed_next_page
+
+        return parsed_next_page
+
+    def extract_categories(self):
+        """Get all category urls from loaded parsed url."""
+        parsed_category_pages = self.parsed_url.find("ul", class_="nav nav-list").li
+        parsed_category_pages = parsed_category_pages.find_all("li")
+
+        category_links = []
+        for tag in parsed_category_pages:
+            link_parsed = tag.find("a")["href"]
+            if "catalogue" in link_parsed:
+                link_parsed = "http://books.toscrape.com/" + link_parsed
+            elif "../" in link_parsed:
+                link_parsed = link_parsed.replace("../", "")
+                link_parsed = "http://books.toscrape.com/catalogue/" + link_parsed
+
+            category_links.append(link_parsed)
+
+        return category_links
+
 
 class WebHandler:
     """Handle data conversion and extraction from an url string."""
@@ -218,7 +254,7 @@ class WebHandler:
 
     def extract_categories(self):
         """Get all category urls from loaded parsed url."""
-        pass
+        return self.data_extractor.extract_categories()
 
     def print_request_status(self, requests, elapsed_time, print_modulo):
         """Print the request status progression every print_modulo requests."""
@@ -228,3 +264,7 @@ class WebHandler:
                     requests, requests / elapsed_time
                 )
             )
+
+    def get_next_page(self):
+        """Return the next page of catalogue page if any or return "None" otherwise."""
+        return self.data_extractor.get_next_page()
