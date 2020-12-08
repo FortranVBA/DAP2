@@ -33,7 +33,7 @@ All image files are also downloaded and classified by book category folders.
 2. Create a new environment.
     * Type in vscode or your OS terminal **python -m venv .venv**
 3. Activate your new environment.
-    * Type in vscode or your OS terminal **. .venv/Scripts/activate **
+    * Type in vscode or your OS terminal **.** **.venv/Scripts/activate**
 4. Install all required librairies.
     * Type in vscode or your OS terminal **pip install -r requirements.txt**
 
