@@ -25,7 +25,7 @@ All image files are also downloaded and classified by book category folders.
 ## Requirements
 
 - Python 3.7 or higher (developed and tested with python 3.7.1)
-- Required library are listed in requirements.txt file
+- Required libraries are listed in requirements.txt file
 
 ## Installation
 
