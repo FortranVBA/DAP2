@@ -39,6 +39,9 @@ All image files are also downloaded and classified by book category folders.
 
 ## Operation
 
+- Activate your environment (you may have already done it during the installation steps, but you need to re-activate it each time you close your terminal / vscode and start with a new terminal).
+    * Type in vscode or your OS terminal **.** **.venv/Scripts/activate**
+
 - Execute main.py:
     * Type **main.py** in terminal (windows terminal / vscode terminal)
     * Or type **python3 main.py** in linux terminal
