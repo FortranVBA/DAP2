@@ -25,28 +25,33 @@ All image files are also downloaded and classified by book category folders.
 ## Requirements
 
 - Python 3.7 or higher (developed and tested with python 3.7.1)
-- Required libraries are listed in requirements.txt file
 
 ## Installation
 
 1. Download the repository content.
-2. Create a new environment.
-    * Type in vscode or your OS terminal **python -m venv .venv**
-3. Activate your new environment.
-    * Type in vscode or your OS terminal **.** **.venv/Scripts/activate**
-4. Install all required librairies.
-    * Type in vscode or your OS terminal **pip install -r requirements.txt**
+2. From project root folder, type in vscode (or other python interpretor for Windows) or your OS terminal (Linux or Mac OS) 
+    ```python -m venv .venv #Create a new environment.```
+3. Type in vscode (or other python interpretor for Windows) or your OS terminal (Linux or Mac OS) 
+    - For windows: ```. .venv/Scripts/activate #Activate your new environment.```
+    - For MAC OS / Linux: ```. .venv/bin/activate #Activate your new environment.```
+4. Type in vscode (or other python interpretor for Windows) or your OS terminal (Linux or Mac OS)
+    ```pip install -r requirements.txt #Install all required librairies.```
 
 ## Operation
 
-- Execute main.py:
-    * Type **main.py** in terminal (windows terminal / vscode terminal)
-    * Or type **python3 main.py** in linux terminal
+- Activate your environment (you may have already done it during the installation steps, but you need to re-activate it each time you close your terminal / vscode and start with a new terminal).
+You can do so by typing in vscode (or other python interpretor for Windows) or your OS terminal (Linux or Mac OS):
+    - For windows: ```. .venv/Scripts/activate #Activate your new environment.```
+    - For MAC OS / Linux: ```. .venv/bin/activate #Activate your new environment.```
+
+- Execute main.py from project root folder:
+    - Type ```python main.py``` in terminal (vscode or other python interpretor for Windows)
+    - Or type ```python3 main.py``` in terminal (Linux or Mac OS)
 
 - The program will print in terminal:
     * The current scrapped catalogue page
-    * The 1st and every 5 (this number can be changed with **PRINT_MODULO_FREQ** variable in config.py file) requests, the number of requests done in the current catalogue page and the average request speed (speed can be adjusted by changing the **REQUEST_WAIT_RANGE** variable in config.py file, which is the range in seconds used as waiting time between request).  
-    * After retrieving data, the 1st and every 5 (this number can be changed with **PRINT_MODULO_FREQ** variable in config.py file) requests,  the number of requests done for image download and the average request speed (speed can be adjusted by changing the **REQUEST_WAIT_RANGE** variable in config.py file, which is the range in seconds used as waiting time between request).
+    * The 1st and every 5 (this number can be changed with ```PRINT_MODULO_FREQ``` variable in config.py file) requests, the number of requests done in the current catalogue page and the average request speed (speed can be adjusted by changing the ```REQUEST_WAIT_RANGE``` variable in config.py file, which is the range in seconds used as waiting time between request).  
+    * After retrieving data, the 1st and every 5 (this number can be changed with ```PRINT_MODULO_FREQ``` variable in config.py file) requests,  the number of requests done for image download and the average request speed (speed can be adjusted by changing the ```REQUEST_WAIT_RANGE``` variable in config.py file, which is the range in seconds used as waiting time between request).
 
 - After the program ended, you can find in :
     * csv folder, all csv files (one per book category)

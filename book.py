@@ -148,7 +148,7 @@ class BookData:
         path_csv = Path()
 
         path_csv = path.absolute() / filename
-        with path_csv.open(mode="w", encoding="utf-8") as file:
+        with path_csv.open(mode="w", encoding="utf-8", newline="") as file:
             writer = csv.writer(file)
             writer.writerow(
                 [
@@ -192,7 +192,7 @@ class BookData:
 
             path_csv = path_csv / file_name
 
-            with path_csv.open(mode="w", encoding="utf-8") as file:
+            with path_csv.open(mode="w", encoding="utf-8", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(
                     [
