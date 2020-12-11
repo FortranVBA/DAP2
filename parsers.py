@@ -190,9 +190,11 @@ class DataExtractor:
             parsed_next_page = parsed_next_page.find("a")["href"]
             modif_url = self.url
             if "index.html" in modif_url:
-                modif_url = modif_url.replace("index.html", "")
-            elif "page-1.html" in modif_url:
-                modif_url = modif_url.replace("page-1.html", "")
+                last_part_location = modif_url.rfind("/") + 1
+                modif_url = modif_url[0:last_part_location]
+            elif "page" in modif_url:
+                last_part_location = modif_url.rfind("/") + 1
+                modif_url = modif_url[0:last_part_location]
 
             parsed_next_page = modif_url + parsed_next_page
 
